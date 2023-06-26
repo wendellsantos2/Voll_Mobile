@@ -8,6 +8,7 @@ import {
   Input,
   Button,
   Link,
+  Checkbox
 } from 'native-base';
 import Logo from '../src/assets/Logo.png';
 import { TouchableOpacity } from 'react-native';
@@ -44,12 +45,34 @@ export default function Cadastro() {
           label: 'CEP',
           placeholder: 'Digite seu CEP'
         }
-      ]
+      ],
+      checkbox: [] // Corrigido: remover duplicação
     },
     {
-      
+      id: 3,
+      titulo: 'Para finalizar, quais são os seus planos?',
+      entradaTexto: [],
+      checkbox: [
+        {
+          id: 1,
+          value: 'Sulamerica'
+        },
+        {
+          id: 2,
+          value: 'Unimed'
+        },
+        {
+          id: 3,
+          value: 'Mil'
+        },
+        {
+          id: 4,
+          value: 'Sulamerica'
+        },
+      ]
     }
   ];
+  
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -77,16 +100,25 @@ export default function Cadastro() {
         {secoes[numSecao].titulo}
       </Titulo>
       <Box>
-        {
-          secoes[numSecao].entradaTexto.map(entrada => (
-            <EntradaTexto
-              key={entrada.id}
-              label={entrada.label}
-              placeholder={entrada.placeholder}
-            />
-          ))
-        }
-      </Box>
+  {secoes[numSecao]?.entradaTexto?.map(entrada => (
+    <EntradaTexto
+      key={entrada.id}
+      label={entrada.label}
+      placeholder={entrada.placeholder}
+    />
+  ))}
+</Box>
+
+{secoes[numSecao].checkbox && secoes[numSecao].checkbox.length > 0 && (
+  <Box>
+    {secoes[numSecao].checkbox.map(checkbox => (
+      <Checkbox key={checkbox.id} value={checkbox.value}>
+        {checkbox.value}
+      </Checkbox>
+    ))}
+  </Box>
+)}
+
    {numSecao > 0 && <Botao onPress={voltarSecao} bgColor="gray.400" _pressed={{ bgColor: 'gray.500' }}>
           Voltar
         </Botao>}
