@@ -8,71 +8,23 @@ import {
   Input,
   Button,
   Link,
-  Checkbox
+  Checkbox,
+  ScrollView
 } from 'native-base';
 import Logo from '../src/assets/Logo.png';
-import { TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { Titulo } from './componentes/Titulo';
 import { EntradaTexto } from './componentes/EntradaTexto';
 import { Botao } from './componentes/Botao';
+import { secoes } from './utils/CadastroEntradaTexto';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Cadastro() {
   const [numSecao, setNumSecao] = useState(0);
-  const secoes = [
-    {
-      id: 1,
-      titulo: 'Insira alguns dados básicos',
-      entradaTexto: [
-        {
-          id: 2,
-          label: 'Nome',
-          placeholder: 'Digite seu nome completo'
-        },
-        {
-          id: 3,
-          label: 'Email',
-          placeholder: 'Digite seu email'
-        } 
-      ]
-    },
-    {
-      id: 2,
-      titulo: 'Agora, mais alguns dados sobre você:',
-      entradaTexto: [
-        {
-          id: 1,
-          label: 'CEP',
-          placeholder: 'Digite seu CEP'
-        }
-      ],
-      checkbox: [] // Corrigido: remover duplicação
-    },
-    {
-      id: 3,
-      titulo: 'Para finalizar, quais são os seus planos?',
-      entradaTexto: [],
-      checkbox: [
-        {
-          id: 1,
-          value: 'Sulamerica'
-        },
-        {
-          id: 2,
-          value: 'Unimed'
-        },
-        {
-          id: 3,
-          value: 'Mil'
-        },
-        {
-          id: 4,
-          value: 'Sulamerica'
-        },
-      ]
-    }
-  ];
-  
+  const navigation = useNavigation();
+
+  const back = () => {
+    navigation.goBack();
+  };
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -86,45 +38,57 @@ export default function Cadastro() {
     }
   }
 
-  function voltarSecao(){
-    if(numSecao > 0 ) {
-      setNumSecao(numSecao - 1)
+  function voltarSecao() {
+    if (numSecao > 0) {
+      setNumSecao(numSecao - 1);
     }
   }
 
+  function voltarParaMenu() {
+    
+    navigation.goBack();
+  }
+
   return (
-    <VStack flex={1} alignItems="center" p={5}>
-      <Image source={Logo} alt="Logo Voll" />
+    <ScrollView flex={1} p={5}>
+      <Image source={Logo} alignItems="center" alt="Logo Voll" />
 
-      <Titulo>
-        {secoes[numSecao].titulo}
-      </Titulo>
+      <Titulo>{secoes[numSecao].titulo}</Titulo>
+
+    
+
       <Box>
-  {secoes[numSecao]?.entradaTexto?.map(entrada => (
-    <EntradaTexto
-      key={entrada.id}
-      label={entrada.label}
-      placeholder={entrada.placeholder}
-    />
-  ))}
-</Box>
-
-{secoes[numSecao].checkbox && secoes[numSecao].checkbox.length > 0 && (
-  <Box>
-    {secoes[numSecao].checkbox.map(checkbox => (
-      <Checkbox key={checkbox.id} value={checkbox.value}>
-        {checkbox.value}
-      </Checkbox>
-    ))}
-  </Box>
-)}
-
-   {numSecao > 0 && <Botao onPress={voltarSecao} bgColor="gray.400" _pressed={{ bgColor: 'gray.500' }}>
-          Voltar
-        </Botao>}
-        <Botao onPress={avancarSecao} bgColor="blue.800" _pressed={{ bgColor: 'blue.900' }}>
-          Avançar
+        {secoes[numSecao]?.entradaTexto?.map((entrada) => (
+          <EntradaTexto key={entrada.id} label={entrada.label} placeholder={entrada.placeholder} />
+        ))}
+          {numSecao === 0 && (
+        <Botao onPress={voltarParaMenu} bgColor="gray.400" _pressed={{ bgColor: 'gray.500' }}>
+          Voltar para o Menu
         </Botao>
-    </VStack>
+      )}
+      </Box>
+
+      {secoes[numSecao].checkbox && secoes[numSecao].checkbox.length > 0 && (
+        <Box>
+          <Text color="blue.800" fontWeight="bold" fontSize="md" mt="2" mb={2}>
+            Selecione o plano:
+          </Text>
+          {secoes[numSecao].checkbox.map((checkbox) => (
+            <Checkbox key={checkbox.id} value={checkbox.value}>
+              {checkbox.value}
+            </Checkbox>
+          ))}
+        </Box>
+      )}
+
+      {numSecao > 0 && (
+        <Botao onPress={voltarSecao} bgColor="gray.400" _pressed={{ bgColor: 'gray.500' }}>
+          Voltar
+        </Botao>
+      )}
+      <Botao onPress={avancarSecao} bgColor="blue.800" _pressed={{ bgColor: 'blue.900' }}>
+        Avançar
+      </Botao>
+    </ScrollView>
   );
 }
